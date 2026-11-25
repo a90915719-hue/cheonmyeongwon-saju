@@ -3697,7 +3697,10 @@ function shareCmwToKakao() {
     try {
       if (localStorage.getItem(k) === '1') return true;
     } catch(e) {}
-    return document.cookie.indexOf(k + '=1') !== -1;
+    try {
+      return document.cookie.indexOf(k + '=1') !== -1;
+    } catch(e) {}
+    return false;
   }
 
   function setFlag(k) {
