@@ -21,8 +21,20 @@
   var v = q.get('v') || String(Date.now());
   f.style.height = h + 'px';
   f.setAttribute('height', String(h));
+  window.__errs = [];
   if (q.get('sameorigin') === '1') {
     f.removeAttribute('sandbox');
+    f.addEventListener('load', function () {
+      try {
+        var w = f.contentWindow;
+        w.addEventListener('error', function (e) {
+          window.__errs.push(String(e.message) + ' @' + e.filename + ':' + e.lineno);
+        });
+        w.addEventListener('unhandledrejection', function (e) {
+          window.__errs.push('promise: ' + String(e.reason));
+        });
+      } catch (e) { window.__errs.push('hook fail: ' + e); }
+    });
   } else {
     f.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-modals');
   }
